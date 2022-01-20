@@ -22,21 +22,21 @@ The completed exercise is due on <>.
 
 1. What are your previous experiences with data analytics, R, and Git? Include both formal and informal training.
 
-> Answer: 0
+> Answer: My previous experience with data analytics covers mostly data visualization, tabulation and regression performed through the tools like Excel, Sheets, Stata and R. Stata was formally though at my undergrad level, while I practiced some R in my second semester of Master's studies.
 
 2. Are there any components of the course about which you feel confident?
 
-> Answer: 
+> Answer: I would not say that. For me R is, mostly, a dark forest.
 
 3. Are there any components of the course about which you feel apprehensive?
 
-> Answer: 
+> Answer: I have very little idea about coding but I was passionate about giving it a try. So, while it is apprehensive to start working on Github, I feel this is the way to ontinue.
 
 
 ## 2) GitHub
 
 Provide a link below to your forked course repository in GitHub. Make sure you have pulled all recent changes from the course repository  and that you have updated your course README file. 
 
-> Answer: 
+> Answer: https://github.com/smuradov2021/Environmental_Data_Analytics_2022.git
 
 
