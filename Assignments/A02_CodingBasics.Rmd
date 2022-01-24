@@ -24,18 +24,31 @@ This exercise accompanies the lessons in Environmental Data Analytics on coding 
 
 1. Generate a sequence of numbers from one to 100, increasing by fours. Assign this sequence a name. 
 
-2. Compute the mean and median of this sequence. 
+```{r}
+seq_by_4<-seq(1,100,4)
+```
 
-3. Ask R to determine whether the mean is greater than the median. 
+2. Compute the mean and median of this sequence.
+
+```{r}
+mean(seq_by_4)
+median(seq_by_4)
+```
+
+3. Ask R to determine whether the mean is greater than the median.
+
+```{r}
+mean(seq_by_4)>median(seq_by_4)
+```
 
 4. Insert comments in your code to describe what you are doing.
 
 ```{r}
-#1. 
+#1. Assign sequence from 1 to 100 by 4 a name 
 
-#2. 
+#2. Find the mean and median valeus of the sequence
 
-#3. 
+#3. Compare the values of median and mean
 
 ```
 
