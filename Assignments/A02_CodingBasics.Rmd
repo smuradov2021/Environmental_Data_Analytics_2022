@@ -63,21 +63,38 @@ mean(seq_by_4)>median(seq_by_4)
 8. Label the columns of your data frame with informative titles.
 
 ```{r}
+Students<-c("Suad","Nijat","Aynur","Rashad") #character
+Score<-c(80,100,39,50) #numeric
+Pass<-c(TRUE,TRUE,FALSE,TRUE) #logical
 
+Test<-data.frame("student"=Students, "score"=Score, "passed"=Pass)
 ```
 
 9. QUESTION: How is this data frame different from a matrix?
 
-> Answer: 
+> Answer: A matrix's columns must all have the same data type and length (for example, numeric or character). An advantage of using a data frame instead of a matrix is that it allows for greater flexibility in the types of values that may be stored in each column (such as numeric, character, factor, etc.). Before performing any data analysis, it is common practice to transform a matrix to a data frame.
 
 10. Create a function with an if/else statement. Your function should determine whether a test score is a passing grade of 50 or above (TRUE or FALSE). You will need to choose either the `if` and `else` statements or the `ifelse` statement. Hint: Use `print`, not `return`. The name of your function should be informative.
 
 11. Apply your function to the vector with test scores that you created in number 5. 
 
 ```{r}
+Pass<-function(x){
+  if(x>=50){
+    print("Passed")
+  }
+  else {
+    print("Failed")
+  }
+}
+Pass(Test$score)
 
+Pass<-function(x){
+  ifelse(x>=50,print("Passed"),print("Failed"))
+}
+Pass(Test$score)
 ```
 
 12. QUESTION: Which option of `if` and `else` vs. `ifelse` worked? Why?
 
-> Answer: 
+> Answer: 'If' and 'else' did not work while 'ifelse' did. While the first option just takes one element into account and returns just the output of the first element, we have 4 elements to be tested. 'ifelse' considers each element in the list and therefore, here we shall be using this option.
