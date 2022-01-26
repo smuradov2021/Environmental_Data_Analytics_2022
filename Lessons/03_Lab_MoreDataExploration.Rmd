@@ -144,9 +144,9 @@ Remember formatting of dates in R:
 # (code must be uncommented)
 today <- Sys.Date()
 format(today, format = "%B")
-#format(today, format = "")
-#format(today, format = "")
-#format(today, format = "")
+format(today, format = "%y")
+format(today, format = "%m-%d-%Y")
+format(today, format = "%b")
 
 ```
 
@@ -158,18 +158,14 @@ Install and load the package lubridate into your R session. Lubridate offers fas
 More info on lubridate [here][https://cran.r-project.org/web/packages/lubridate/lubridate.pdf].
 
 ```{r DateExercise1}
-#install.packages("lubridate")
-library(lubridate)
-
 #Ex1
-str_today <- "2021-feb-3"
 #Since the format is year-month-day we will use function ymd()
 date_obj_today <- ymd(str_today)
 date_obj_today
 
 #Ex2
 str_today <- "21-feb-3"
-#Sine the format is year-month-day we will use function ymd()
+#Since the format is year-month-day we will use function ymd()
 date_obj_today <- ymd(str_today)
 date_obj_today
 
