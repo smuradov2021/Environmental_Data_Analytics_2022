@@ -1,7 +1,11 @@
 ---
-title: "Assignment 3: Data Exploration"
-author: "Suad Muradov, Section #3"
-output: pdf_document
+title: 'Assignment 3: Data Exploration'
+author: 'Suad Muradov, Section #3'
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
+  word_document: default
 geometry: margin=2.54cm
 ---
 
@@ -23,7 +27,6 @@ The completed exercise is due on <>.
 
 1. Check your working directory, load necessary packages (tidyverse), and upload two datasets: the ECOTOX neonicotinoid dataset (ECOTOX_Neonicotinoids_Insects_raw.csv) and the Niwot Ridge NEON dataset for litter and woody debris (NEON_NIWO_Litter_massdata_2018-08_raw.csv). Name these datasets "Neonics" and "Litter", respectively. **Be sure to add the `stringsAsFactors = TRUE` parameter to the function when reading in the CSV files.**
 ```{r,  message = FALSE}
-install.packages("tidyverse")
 getwd()
 Neonics <- read.csv("../Data/Raw/ECOTOX_Neonicotinoids_Insects_raw.csv", stringsAsFactors=TRUE)
 Litter <- read.csv("../Data/Raw/NEON_NIWO_Litter_massdata_2018-08_raw.csv", stringsAsFactors = TRUE)
@@ -85,12 +88,13 @@ class(Neonics$Conc.1..Author.)
 
 9. Using `geom_freqpoly`, generate a plot of the number of studies conducted by publication year. 
 ```{r, fig.height=4, fig.width=5}
-
+ggplot(Neonics) + geom_freqpoly(aes(x = Publication.Year), bins = 50)
 ```
 
 10. Reproduce the same graph but now add a color aesthetic so that different Test.Location are displayed as different colors.
 ```{r}
-
+ggplot(Neonics) +
+  geom_freqpoly(aes(x = Test.Location), bins = 50) + geom_freqpoly(aes(x = Test.Location), bins = 50, color = "green")
 ```
 
 Interpret this graph. What are the most common test locations, and do they differ over time?
@@ -99,29 +103,32 @@ Interpret this graph. What are the most common test locations, and do they diffe
 
 11. Create a bar graph of Endpoint counts. What are the two most common end points, and how are they defined? Consult the ECOTOX_CodeAppendix for more information. 
 
-```{r}
-
+```{r, fig.height=4, fig.width=7}
+ggplot(Neonics, aes(x = Endpoint)) +
+  geom_bar()
 ```
 
-> Answer: 
+> Answer: Lowest-observable-effect-level and No-observable-effect-level for Terrestrial species were the two most common endpoints. 
 >
 
 ## Explore your data (Litter)
 
 12. Determine the class of collectDate. Is it a date? If not, change to a date and confirm the new class of the variable. Using the `unique` function, determine which dates litter was sampled in August 2018. 
 ```{r}
-install.packages("lubridate")
 class(Litter$collectDate)
 factor2date<-ymd(Litter$collectDate)
+class(factor2date)
+unique(factor2date,incomparables = FALSE)
+
 ```
 
 13. Using the `unique` function, determine how many plots were sampled at Niwot Ridge. How is the information obtained from `unique` different from that obtained from `summary`?
 
 ```{r}
-
+unique(Litter$plotID,incomparables = FALSE)
 ```
 
-> Answer: 
+> Answer: While 'summary' function is designed to tell us which properties is included into our model, it does not show us the observations. 'unique' function removes duplicate elements and rows from an array, data frame, or vector similar to x and then shows the observations
 
 14. Create a bar graph of functionalGroup counts. This shows you what type of litter is collected at the Niwot Ridge sites. Notice that litter types are fairly equally distributed across the Niwot Ridge sites.
 ```{r}
