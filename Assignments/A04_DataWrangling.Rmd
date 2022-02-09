@@ -1,7 +1,9 @@
 ---
-title: "Assignment 4: Data Wrangling"
-author: "Student Name"
-output: pdf_document
+title: 'Assignment 4: Data Wrangling'
+author: "Suad Muradov"
+output:
+  html_document:
+    df_print: paged
 geometry: margin=2.54cm
 ---
 
@@ -25,8 +27,30 @@ The completed exercise is due on Monday, Feb 7 @ 7:00pm.
 
 ```{r, message = FALSE}
 #1
-
+getwd()
+library(tidyverse)
+library(lubridate)
+EPA.03.2018<-read.csv("../Data/Raw/EPAair_O3_NC2018_raw.csv",stringsAsFactors = TRUE)
+EPA.03.2019<-read.csv("../Data/Raw/EPAair_O3_NC2019_raw.csv",stringsAsFactors = TRUE)
+EPA.PM.2018<-read.csv("../Data/Raw/EPAair_PM25_NC2018_raw.csv",stringsAsFactors = TRUE)
+EPA.PM.2019<-read.csv("../Data/Raw/EPAair_PM25_NC2019_raw.csv",stringsAsFactors = TRUE)
 #2
+
+colnames(EPA.03.2018)
+dim(EPA.03.2018)
+str(EPA.03.2018)
+
+colnames(EPA.03.2019)
+dim(EPA.03.2019)
+str(EPA.03.2019)
+
+colnames(EPA.PM.2018)
+dim(EPA.PM.2018)
+str(EPA.PM.2018)
+
+colnames(EPA.PM.2019)
+dim(EPA.PM.2019)
+str(EPA.PM.2019)
 ```
 
 ## Wrangle individual datasets to create processed files.
@@ -37,12 +61,28 @@ The completed exercise is due on Monday, Feb 7 @ 7:00pm.
 
 ```{r}
 #3
+EPA.03.2018$Date<-as.Date(EPA.03.2018$Date, format = "%Y-%m-%d")
+EPA.03.2019$Date<-as.Date(EPA.03.2019$Date, format = "%Y-%m-%d")
+EPA.PM.2018$Date<-as.Date(EPA.PM.2018$Date, format = "%Y-%m-%d")
+EPA.PM.2019$Date<-as.Date(EPA.PM.2019$Date, format = "%Y-%m-%d")
 
-#4
+#4. Selecting Date, DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC, COUNTY, SITE_LATITUDE, SITE_LONGITUDE columns
+EPA.03.2018.7.parameters<-select(EPA.03.2018,Date,DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC,COUNTY:SITE_LONGITUDE)
+EPA.03.2019.7.parameters<-select(EPA.03.2019,Date,DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC,COUNTY:SITE_LONGITUDE)
+EPA.PM.2018.7.parameters<-select(EPA.PM.2018,Date,DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC,COUNTY:SITE_LONGITUDE)
+EPA.PM.2019.7.parameters<-select(EPA.PM.2019,Date,DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC,COUNTY:SITE_LONGITUDE)
+
 
 #5
 
+EPA.PM.2018.7.parameters.identical<-filter(EPA.PM.2018.7.parameters, AQS_PARAMETER_DESC == "PM2.5 - Local Conditions")
+EPA.PM.2019.7.parameters.identical<-filter(EPA.PM.2019.7.parameters, AQS_PARAMETER_DESC == "PM2.5 - Local Conditions")
+
 #6
+write.csv(EPA.03.2018.7.parameters, row.names = FALSE, file = "../Data/Processed/EPAair_O3_NC2018_processed.csv")
+write.csv(EPA.03.2019.7.parameters, row.names = FALSE, file = "../Data/Processed/EPAair_O3_NC2019_processed.csv")
+write.csv(EPA.PM.2018.7.parameters.identical, row.names = FALSE, file = "../Data/Processed/EPAair_25_NC2018_processed.csv")
+write.csv(EPA.PM.2019.7.parameters.identical, row.names = FALSE, file = "../Data/Processed/EPAair_25_NC2018_processed.csv")
 
 ```
 
@@ -62,15 +102,27 @@ The completed exercise is due on Monday, Feb 7 @ 7:00pm.
 
 ```{r}
 #7
+EPA.03.PM.2018.2019<-rbind(EPA.03.2018.7.parameters,EPA.03.2019.7.parameters,EPA.PM.2018.7.parameters.identical,EPA.PM.2019.7.parameters.identical)
+
 
 #8
+intersect(EPA.03.2018.7.parameters,EPA.03.2019.7.parameters,EPA.PM.2018.7.parameters.identical,EPA.PM.2019.7.parameters.identical)
+piped.dataset<-
+  EPA.03.PM.2018.2019%>%
+  filter(Site.Name=="Linville Falls" | Site.Name=="Durham Armory" | Site.Name=="Leggett" | Site.Name=="Hattie Avenue" | Site.Name=="Clemmons Middle" | Site.Name=="Mendenhall School" | Site.Name=="Frying Pan Mountain" | Site.Name=="West Johnston Co." | Site.Name=="Garinger High School" | Site.Name=="Castle Hayne" | Site.Name=="Pitt Agri. Center" | Site.Name=="Bryson City" | Site.Name=="Millbrook School")%>%
+  group_by(Date,Site.Name,AQS_PARAMETER_DESC,COUNTY)%>%
+  summarise(mean.AQI=mean(DAILY_AQI_VALUE),
+            mean.latitude=mean(SITE_LATITUDE),
+            mean.longitude=mean(SITE_LONGITUDE))%>%
+  mutate(EPA.03.PM.2018.2019, month = month(Date))%>%
+  mutate(EPA.03.PM.2018.2019, year = year(Date))
 
 #9
-
+EPA.03.PM.2018.2019.spread<-spread(EPA.03.PM.2018.2019,EPA.03.PM.2018.2019$DAILY_AQI_VALUE,EPA.03.PM.2018.2019$Date)
 #10
-
+dim(EPA.03.PM.2018.2019.spread)
 #11
-
+write.csv(EPA.03.PM.2018.2019.spread, row.names = FALSE, file = "../Data/Processed/EPAair_O3_PM25_NC2122_Processed.csv")
 ```
 
 
