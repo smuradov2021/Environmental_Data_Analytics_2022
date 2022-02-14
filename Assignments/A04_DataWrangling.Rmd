@@ -114,11 +114,11 @@ piped.dataset<-
   summarise(mean.AQI=mean(DAILY_AQI_VALUE),
             mean.latitude=mean(SITE_LATITUDE),
             mean.longitude=mean(SITE_LONGITUDE))%>%
-  mutate(EPA.03.PM.2018.2019, month = month(Date))%>%
-  mutate(EPA.03.PM.2018.2019, year = year(Date))
+  mutate(month = month(Date))%>%
+  mutate(year = year(Date))
 
 #9
-EPA.03.PM.2018.2019.spread<-spread(EPA.03.PM.2018.2019,EPA.03.PM.2018.2019$DAILY_AQI_VALUE,EPA.03.PM.2018.2019$Date)
+EPA.03.PM.2018.2019.spread<-pivot_wider(piped.dataset,)
 #10
 dim(EPA.03.PM.2018.2019.spread)
 #11
