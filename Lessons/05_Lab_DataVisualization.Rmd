@@ -62,7 +62,7 @@ Exercise: build your own scatterplots of PeterPaul.chem.nutrients
 # Change the ylab name
 
 PeterPaul.chem.nutrients.Ex.1 <-
-ggplot(subset(PeterPaul.chem.nutrients, depth==0), aes(x = daynum, y = temperature_C)) + 
+ggplot(subset(PeterPaul.chem.nutrients, depth==0), aes(x = daynum, y = temperature_C)) +
   geom_point(aes(color=year4))+
   facet_wrap(vars(lakename),nrow=2)+
   ylab("Surface temperature")
