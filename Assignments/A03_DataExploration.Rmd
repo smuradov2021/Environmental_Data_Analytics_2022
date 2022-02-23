@@ -30,6 +30,8 @@ The completed exercise is due on <>.
 getwd()
 Neonics <- read.csv("../Data/Raw/ECOTOX_Neonicotinoids_Insects_raw.csv", stringsAsFactors=TRUE)
 Litter <- read.csv("../Data/Raw/NEON_NIWO_Litter_massdata_2018-08_raw.csv", stringsAsFactors = TRUE)
+
+Litter$collectDate<-as.Date(Litter$collectDate,"%Y-%m-%d")
 ```
 
 ## Learn about your system
@@ -56,17 +58,15 @@ Litter <- read.csv("../Data/Raw/NEON_NIWO_Litter_massdata_2018-08_raw.csv", stri
 5. What are the dimensions of the dataset?
 
 ```{r}
-colnames(Neonics)
-str(Neonics)
-dim(Neonics)
+dim(Neonics) #4623 rows and 30 columns
 ```
 
 6. Using the `summary` function on the "Effect" column, determine the most common effects that are studied. Why might these effects specifically be of interest?
 ```{r}
-summary(Neonics$Effect)
+summary(Neonics$Effect) 
 ```
 
-> Answer: Most common effects are those of effects on population, mortality and behavior. These effects of neonicotinoids are crucial for us because we want to know what is the specific effects of using these insecticides on the dynamics of group populations, to see how fast their populations decrease and on top of that we are interested in looking at how resistant these pests are to the neonicotinoids (do their effect make them evolve or are they overly effective killers).
+> Answer: Most common effects are those of effects on *population*, *mortality* and *behavior*. These effects of neonicotinoids are crucial for us because we want to know what is the specific effects of using these insecticides on the dynamics of group populations, to see how fast their populations decrease and on top of that we are interested in looking at how resistant these pests are to the neonicotinoids (do their effect make them evolve or are they overly effective killers).
 
 7. Using the `summary` function, determine the six most commonly studied species in the dataset (common name). What do these species have in common, and why might they be of interest over other insects? Feel free to do a brief internet search for more information if needed.
 
@@ -88,13 +88,14 @@ class(Neonics$Conc.1..Author.)
 
 9. Using `geom_freqpoly`, generate a plot of the number of studies conducted by publication year. 
 ```{r, fig.height=4, fig.width=5}
-ggplot(Neonics) + geom_freqpoly(aes(x = Publication.Year), bins = 50)
+library(ggplot2)
+ggplot(Neonics) + geom_freqpoly(aes(x = Publication.Year), bins = 10)
 ```
 
 10. Reproduce the same graph but now add a color aesthetic so that different Test.Location are displayed as different colors.
 ```{r}
 ggplot(Neonics) +
-  geom_freqpoly(aes(x = Test.Location), bins = 50) + geom_freqpoly(aes(x = Test.Location), bins = 50, color = "green")
+  geom_freqpoly(aes(x = Publication.Year, color=Test.Location), bins = 10)
 ```
 
 Interpret this graph. What are the most common test locations, and do they differ over time?
@@ -115,6 +116,7 @@ ggplot(Neonics, aes(x = Endpoint)) +
 
 12. Determine the class of collectDate. Is it a date? If not, change to a date and confirm the new class of the variable. Using the `unique` function, determine which dates litter was sampled in August 2018. 
 ```{r}
+library(lubridate)
 class(Litter$collectDate)
 factor2date<-ymd(Litter$collectDate)
 class(factor2date)
@@ -126,6 +128,8 @@ unique(factor2date,incomparables = FALSE)
 
 ```{r}
 unique(Litter$plotID,incomparables = FALSE)
+summary(Litter$plotID)
+
 ```
 
 > Answer: While 'summary' function is designed to tell us which properties is included into our model, it does not show us the observations. 'unique' function removes duplicate elements and rows from an array, data frame, or vector similar to x and then shows the observations
