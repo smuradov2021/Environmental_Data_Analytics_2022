@@ -196,7 +196,6 @@ corrplot(EPAairCorr, method="ellipse")
 corrplot.mixed(EPAairCorr, upper="ellipse")
 
 
-#Exercise 6: Choose a model by AIC in a Stepwise Algorithm. Do the results from AIC match the variables you selected on Exercise 5?
 OzonebyAll.Regression<-lm (data=EPAair.subset, PM2.5~Ozone + Year + Month + meanLng + meanLat)
 step(OzonebyAll.Regression)
 

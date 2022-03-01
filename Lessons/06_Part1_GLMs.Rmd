@@ -177,6 +177,7 @@ PeterPaulnutrients <-
   select(tn_ug:po4) %>%
   na.omit()
 PeterPaulCorr <- cor(PeterPaulnutrients)
+class(PeterPaul.chem.nutrients)
 corrplot(PeterPaulCorr, method = "ellipse")
 corrplot.mixed(PeterPaulCorr, upper = "ellipse")
 ```
