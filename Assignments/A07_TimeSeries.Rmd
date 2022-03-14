@@ -1,6 +1,6 @@
 ---
 title: "Assignment 7: Time Series Analysis"
-author: "Student Name"
+author: "Suad Muradov"
 output: pdf_document
 geometry: margin=2.54cm
 editor_options: 
@@ -30,6 +30,19 @@ The completed exercise is due on Monday, March 14 at 7:00 pm.
 ```{r}
 #1
 
+library(tidyverse)
+library(dplyr)
+library(lubridate)
+library(trend)
+library(zoo)
+library(Kendall)
+library(tseries)
+
+own.theme<-theme_classic(base_size = 18) +
+  theme(axis.text = element_text(color = "black"), 
+        legend.position = "right", legend.title = element_text(size = 14))
+theme_set(own.theme)
+
 ```
 
 
@@ -38,14 +51,25 @@ The completed exercise is due on Monday, March 14 at 7:00 pm.
 ```{r, message = FALSE}
 #2
 
+EPA.Gar.2010 <-read.csv("./Data/Raw/Ozone_TimeSeries/EPAair_O3_GaringerNC2010_raw.csv",stringsAsFactors = TRUE)
+EPA.Gar.2011 <-read.csv("./Data/Raw/Ozone_TimeSeries/EPAair_O3_GaringerNC2011_raw.csv",stringsAsFactors = TRUE)
+EPA.Gar.2012 <-read.csv("./Data/Raw/Ozone_TimeSeries/EPAair_O3_GaringerNC2012_raw.csv",stringsAsFactors = TRUE)
+EPA.Gar.2013 <-read.csv("./Data/Raw/Ozone_TimeSeries/EPAair_O3_GaringerNC2013_raw.csv",stringsAsFactors = TRUE)
+EPA.Gar.2014 <-read.csv("./Data/Raw/Ozone_TimeSeries/EPAair_O3_GaringerNC2014_raw.csv",stringsAsFactors = TRUE)
+EPA.Gar.2015 <-read.csv("./Data/Raw/Ozone_TimeSeries/EPAair_O3_GaringerNC2015_raw.csv",stringsAsFactors = TRUE)
+EPA.Gar.2016 <-read.csv("./Data/Raw/Ozone_TimeSeries/EPAair_O3_GaringerNC2016_raw.csv",stringsAsFactors = TRUE)
+EPA.Gar.2017 <-read.csv("./Data/Raw/Ozone_TimeSeries/EPAair_O3_GaringerNC2017_raw.csv",stringsAsFactors = TRUE)
+EPA.Gar.2018 <-read.csv("./Data/Raw/Ozone_TimeSeries/EPAair_O3_GaringerNC2018_raw.csv",stringsAsFactors = TRUE)
+EPA.Gar.2019 <-read.csv("./Data/Raw/Ozone_TimeSeries/EPAair_O3_GaringerNC2019_raw.csv",stringsAsFactors = TRUE)
 
+GaringerOzone<-rbind(EPA.Gar.2010, EPA.Gar.2011, EPA.Gar.2012, EPA.Gar.2013, EPA.Gar.2014, EPA.Gar.2015, EPA.Gar.2016, EPA.Gar.2017, EPA.Gar.2018, EPA.Gar.2019)
 ```
 
 ## Wrangle
 
 3. Set your date column as a date class.
 
-4. Wrangle your dataset so that it only contains the columns Date, Daily.Max.8.hour.Ozone.Concentration, and DAILY_AQI_VALUE. 
+4. Wrangle your dataset so that it only contains the columns Date, Daily.Max.8.hour.Ozone.Concentration, and DAILY_AQI_VALUE.
 
 5. Notice there are a few days in each year that are missing ozone concentrations. We want to generate a daily dataset, so we will need to fill in any missing days with NA. Create a new data frame that contains a sequence of dates from 2010-01-01 to 2019-12-31 (hint: `as.data.frame(seq())`). Call this new data frame Days. Rename the column name in Days to "Date".
 
@@ -53,8 +77,13 @@ The completed exercise is due on Monday, March 14 at 7:00 pm.
 
 ```{r}
 # 3
+GaringerOzone$Date <- as.Date(GaringerOzone$Date, format = "%m/%d/%y")
 
 # 4
+GaringerOzone.processed<-
+  GaringerOzone%>%
+  select(Date, Daily.Max.8.hour.Ozone.Concentration, DAILY_AQI_VALUE)%>%
+  na.omit()
 
 # 5
 
