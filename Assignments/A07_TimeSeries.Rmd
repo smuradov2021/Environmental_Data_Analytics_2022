@@ -33,6 +33,7 @@ The completed exercise is due on Monday, March 14 at 7:00 pm.
 library(tidyverse)
 library(dplyr)
 library(lubridate)
+library(ggplot2)
 library(trend)
 library(zoo)
 library(Kendall)
@@ -76,19 +77,25 @@ GaringerOzone<-rbind(EPA.Gar.2010, EPA.Gar.2011, EPA.Gar.2012, EPA.Gar.2013, EPA
 6. Use a `left_join` to combine the data frames. Specify the correct order of data frames within this function so that the final dimensions are 3652 rows and 3 columns. Call your combined data frame GaringerOzone. 
 
 ```{r}
-# 3
-GaringerOzone$Date <- as.Date(GaringerOzone$Date, format = "%m/%d/%y")
+# 3 
+GaringerOzone$Date <- as.Date(GaringerOzone$Date, format = "%m/%d/%Y")
 
-# 4
+# 4 Creating a pipe to select 3 columns
+
 GaringerOzone.processed<-
   GaringerOzone%>%
-  select(Date, Daily.Max.8.hour.Ozone.Concentration, DAILY_AQI_VALUE)%>%
-  na.omit()
+  select(Date, Daily.Max.8.hour.Ozone.Concentration, DAILY_AQI_VALUE)
 
 # 5
 
+Days <- as.data.frame(seq(as.Date("2010-01-01"),as.Date("2019-12-31"),by="day"))
+names(Days)[1]<-"Date"
+
 # 6
 
+GaringerOzone<-left_join(Days, GaringerOzone.processed)
+summary(GaringerOzone)
+dim(GaringerOzone)
 ```
 
 ## Visualize
@@ -98,9 +105,16 @@ GaringerOzone.processed<-
 ```{r}
 #7
 
+GaringerOzone.ppmbydate<-
+  ggplot(GaringerOzone, aes(x=Date, y=Daily.Max.8.hour.Ozone.Concentration)) +
+  ylab("Actual concentrations (ppm)")+
+  xlab("Year")+
+  geom_point()+
+  geom_smooth(method=lm)
+print(GaringerOzone.ppmbydate)
 ```
 
->Answer: 
+>Answer: The plot we have sketched illustrates a sinusoid-shaped pattern that means ozone concentrations are changing at a predictable rate within the certain range.
 
 ## Time Series Analysis
 
@@ -111,15 +125,35 @@ Study question: Have ozone concentrations changed over the 2010s at this station
 ```{r}
 #8
 
+head(GaringerOzone)
+summary(GaringerOzone)
+
+GaringerOzone.clean<-
+  GaringerOzone%>%
+  mutate(Daily.Max.8.hour.Ozone.Concentration.clean=zoo::na.approx(Daily.Max.8.hour.Ozone.Concentration))%>%
+  mutate(DAILY_AQI_VALUE.clean=zoo::na.approx(DAILY_AQI_VALUE))%>%
+  select(Date,Daily.Max.8.hour.Ozone.Concentration.clean,DAILY_AQI_VALUE.clean)
+
+summary(GaringerOzone.clean$Daily.Max.8.hour.Ozone.Concentration.clean)
+
 ```
 
-> Answer:  
+> Answer: We use linear interpolation because it is easier to use and the dataset is tiny and linear which gives more accurate results. Certainly, we would not use linear interpolation with the large dataset which has a comple function (many variables). 
 
 
 9. Create a new data frame called `GaringerOzone.monthly` that contains aggregated data: mean ozone concentrations for each month. In your pipe, you will need to first add columns for year and month to form the groupings. In a separate line of code, create a new Date column with each month-year combination being set as the first day of the month (this is for graphing purposes only)
 
 ```{r}
 #9
+
+GaringerOzone.monthly<-
+  GaringerOzone.clean%>%
+  mutate(Month=month(Date))%>%
+  mutate(Year=year(Date))%>%
+  mutate(Day=my(paste0(Month, "-", Year)))%>%
+  dplyr::group_by(Date, Month, Year)%>%
+  dplyr::summarise(mean_O3=mean(Daily.Max.8.hour.Ozone.Concentration.clean))%>%
+  select(mean_O3, Date, Month, Year)
 
 ```
 
@@ -128,7 +162,19 @@ Study question: Have ozone concentrations changed over the 2010s at this station
 
 ```{r}
 #10
+f_year<- year(first(GaringerOzone.clean$Date))
+l_year<- year(last(GaringerOzone.clean$Date))
+f_month <- month(first(GaringerOzone.clean$Date))
+l_month<- month(last(GaringerOzone.clean$Date))
+f_day <- day(first(GaringerOzone.clean$Date))
+l_day<- day(last(GaringerOzone.clean$Date))
 
+GaringerOzone.monthly.ts <- ts(GaringerOzone.clean$Daily.Max.8.hour.Ozone.Concentration.clean,
+                               start=c(f_year,f_month), end = c(l_year, l_month),
+                               frequency=12)
+GaringerOzone.daily.ts <- ts(GaringerOzone.clean$Daily.Max.8.hour.Ozone.Concentration.clean,
+                             start=c(f_month,f_day), end = c(l_year, l_month),
+                             frequency=365)
 
 ```
 
@@ -137,6 +183,11 @@ Study question: Have ozone concentrations changed over the 2010s at this station
 
 ```{r}
 #11
+
+GaringerOzone.daily.ts.decompose<-stl(GaringerOzone.daily.ts, s.window = "periodic")
+plot(GaringerOzone.daily.ts.decompose)
+GaringerOzone.monthly.ts.decompose<-stl(GaringerOzone.monthly.ts, s.window = "periodic")
+plot(GaringerOzone.monthly.ts.decompose)
 
 
 ```
@@ -147,24 +198,32 @@ Study question: Have ozone concentrations changed over the 2010s at this station
 ```{r}
 #12
 
-
+GaringerOzone.monthly.ts.trend1<-Kendall::SeasonalMannKendall(GaringerOzone.monthly.ts)
+summary(GaringerOzone.monthly.ts.trend1)
+GaringerOzone.monthly.ts.trend2<-trend::smk.test (GaringerOzone.monthly.ts)
+summary(GaringerOzone.monthly.ts.trend2)
 
 ```
 
-> Answer:  
+> Answer: In our case we cannot exactly expect seasonality from month to month regarding the ozone distributions, because the trends occur in various leanings as we change from one season to another. Seasonal Mann Kendall analysis is therefore helpful to solve this problem. 
 
 13. Create a plot depicting mean monthly ozone concentrations over time, with both a geom_point and a geom_line layer. Edit your axis labels accordingly.
 
 ```{r}
 # 13
-
-
+is.data.frame(GaringerOzone.monthly)
+GaringerOzone.monthly.plot <-
+  ggplot(GaringerOzone.monthly, aes(x=Date, y=mean_O3)) +
+  ylab("mean ozone concentrations")+
+  geom_point()+
+  geom_line()
+print(GaringerOzone.monthly.plot)
 
 ```
 
 14. To accompany your graph, summarize your results in context of the research question. Include output from the statistical test in parentheses at the end of your sentence. Feel free to use multiple sentences in your interpretation.
 
-> Answer: 
+> Answer: Our question was whether ozone concentrations changed over the 2010s, and based on our p-values across individual seasons, we can find that some months have performed statistically significant results that differed from the other years' values: fx, for May (p-value of 0.0016717), November (p-value of 0.0021718) and December (p-value of 0.0030417) our findings indicated that the across years our ozone concentrations have differed.
 
 15. Subtract the seasonal component from the `GaringerOzone.monthly.ts`. Hint: Look at how we extracted the series components for the EnoDischarge on the lesson Rmd file.
 
@@ -172,6 +231,8 @@ Study question: Have ozone concentrations changed over the 2010s at this station
 
 ```{r}
 #15
+
+
 
 #16
 
