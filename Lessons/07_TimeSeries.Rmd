@@ -192,7 +192,7 @@ summary(wind_data_clean$AWND.clean)
 ggplot(wind_data_clean ) +
   geom_line(aes(x = DATE, y = AWND.clean), color = "red") +
   geom_line(aes(x = DATE, y = AWND), color = "black") +
-  ylab("Average Wind Speed") 
+  ylab("Average Wind Speed")
 ```
 
 ### Monotonic trend analysis, continued
@@ -223,7 +223,7 @@ f_month <- month(first(wind_data_clean$DATE))
 f_year <- year(first(wind_data_clean$DATE))
 wind_data_ts <- ts(wind_data_clean$AWND.clean,
                    start=c(f_year,f_month),
-                   frequency=12) 
+                   frequency=12)
 
 #decompose
 wind_data_decomp <- stl(wind_data_ts,s.window = "periodic")
