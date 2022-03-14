@@ -49,7 +49,7 @@ theme_set(own.theme)
 
 2. Import the ten datasets from the Ozone_TimeSeries folder in the Raw data folder. These contain ozone concentrations at Garinger High School in North Carolina from 2010-2019 (the EPA air database only allows downloads for one year at a time). Import these either individually or in bulk and then combine them into a single dataframe named `GaringerOzone` of 3589 observation and 20 variables. 
 
-```{r, message = FALSE}
+```{r message=FALSE}
 #2
 
 EPA.Gar.2010 <-read.csv("./Data/Raw/Ozone_TimeSeries/EPAair_O3_GaringerNC2010_raw.csv",stringsAsFactors = TRUE)
