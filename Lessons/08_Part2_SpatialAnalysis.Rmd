@@ -117,15 +117,17 @@ mapView(counties_sf, zcol = "AWATER")
 
 ```{r read HUCs shapefile}
 #Read the shapefile into an sf dataframe named "huc8_sf"
-
+huc_s8<- st_read('./Data/Spatial/NCHUC8.shp')
+filter(STATEFP == 37)
 
 #Reveal the columns
-
+colnames(huc_s8)
 
 #Check the CRS
-
+st_crs(huc_s8)
 
 #Examine some records
+head(huc_s8)
 
 
 #View the data as a map, colored by the acreage in each
@@ -139,7 +141,8 @@ mapView(counties_sf, zcol = "AWATER")
 
 ```{r Select the Upper Neuse HUC 8}
 #Read the shapefile into an sf dataframe
-
+huc_s8.subset<-st_read('./Data/Spatial/NCHUC8.shp')%>%
+  filter(SUBBASIN=="Upper Neuse")
 
 
 #Create a map
