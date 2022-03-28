@@ -221,7 +221,7 @@ str(svi2018_nc_raw)
 counties_sf_join <-  merge(x = counties_sf,
                            y = svi2018_nc_raw, 
                            by.x = "GEOID", 
-                           by.y = "FIPS" )
+                           by.y = "FIPS")
 
 #Tidyverse version of the join
 counties_sf_join <- counties_sf %>% 

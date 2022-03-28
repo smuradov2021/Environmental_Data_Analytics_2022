@@ -76,6 +76,7 @@ st_crs(epa_pm25_sites_sf)$epsg
 #Plot the data
 ggplot(data=epa_pm25_sites_sf) +
   geom_sf()
+mapview(epa_pm25_sites_sf)
 ```
 
 ## 2.2 Reading shapefiles into R with `sf`
@@ -117,21 +118,21 @@ mapView(counties_sf, zcol = "AWATER")
 
 ```{r read HUCs shapefile}
 #Read the shapefile into an sf dataframe named "huc8_sf"
-huc_s8<- st_read('./Data/Spatial/NCHUC8.shp')
+huc8_sf<- st_read('./Data/Spatial/NCHUC8.shp')
 filter(STATEFP == 37)
 
 #Reveal the columns
-colnames(huc_s8)
+colnames(huc8_sf)
 
 #Check the CRS
-st_crs(huc_s8)
+st_crs(huc8_sf)
 
 #Examine some records
-head(huc_s8)
+head(huc8_sf)
 
 
 #View the data as a map, colored by the acreage in each
-
+mapView(huc8_sf, zcol="ACRES")
 
 ```
 
@@ -141,12 +142,13 @@ head(huc_s8)
 
 ```{r Select the Upper Neuse HUC 8}
 #Read the shapefile into an sf dataframe
-huc_s8.subset<-st_read('./Data/Spatial/NCHUC8.shp')%>%
+upperNeuse_sf<-st_read('./Data/Spatial/NCHUC8.shp')%>%
   filter(SUBBASIN=="Upper Neuse")
 
 
 #Create a map
-
+mapView(huc8_sf, col.regions='orange')+
+  mapview(upperNeuse_sf, col.regions='purple')
 
 ```
 
@@ -171,6 +173,7 @@ nrow(powerplants_sf)
 
 #View on a map - specify the geometry column to draw faster
 plot(powerplants_sf$geometry)
+mapView(powerplants_sf$geometry)
 
 #Filter for just powerplants found in NC
 nc_powerplants_sf <- powerplants_sf %>% 
@@ -187,7 +190,7 @@ nc_powerplants_sf <- nc_powerplants_sf %>%
 
 # Examine counts by fuel type
 ggplot(nc_powerplants_sf) + 
-  geom_sf(aes(color = PRIM_FUEL)) 
+  geom_sf(aes(color = PRIM_FUEL))
 ```
 
 # 3. WORKING WITH SPATIAL DATA
