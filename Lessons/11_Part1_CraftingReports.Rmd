@@ -63,12 +63,22 @@ See: <https://rmarkdown.rstudio.com> and class recording.
 
 ## WHY R MARKDOWN?
 
-<Fill in our discussion below with bullet points. Use italics and bold for emphasis (hint: use the cheat sheets or `Help` →`Markdown Quick Reference` to figure out how to make bold and italic text).> 
+<Fill in our discussion below with bullet points. Use italics and bold for emphasis (hint: use the cheat sheets or `Help` →`Markdown Quick Reference` to figure out how to make bold and italic text).>
+*Replicability
+*Version control
+*Collaboration
+
+```{r eval=FALSE, message=FALSE, include=FALSE}
+
+```
 
 
 ## TEXT EDITING CHALLENGE
 
 Create a table below that details the example datasets we have been using in class. The first column should contain the names of the datasets and the second column should include some relevant information about the datasets. (Hint: use the cheat sheets to figure out how to make a table in Rmd)
+
+XXX|XXX
+XXX|XXX 2 columns (with texts only)
 
 
 ## R CHUNK EDITING CHALLENGE
@@ -77,6 +87,12 @@ Create a table below that details the example datasets we have been using in cla
 
 Create an R chunk below that installs the package `knitr`. Instead of commenting out the code, customize the chunk options such that the code is not evaluated (i.e., not run).
 
+```{r include=FALSE}
+#installing knitr
+
+library(knitr)
+
+```
 
 ### Setup
 
@@ -105,6 +121,8 @@ Create a fourth and fifth R chunk that generates two plots (one in each chunk): 
 ### Communicating results
 
 Write a paragraph describing your findings from the R coding challenge above. This should be geared toward an educated audience but one that is not necessarily familiar with the dataset. Then insert a horizontal rule below the paragraph. Below the horizontal rule, write another paragraph describing the next steps you might take in analyzing this dataset. What questions might you be able to answer, and what analyses would you conduct to answer those questions?
+
+
 
 
 ## KNIT YOUR PDF
